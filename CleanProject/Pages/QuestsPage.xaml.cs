@@ -12,12 +12,37 @@ public partial class QuestsPage : ContentPage
         public string questname { get; set; }
         public string questcolor { get; set; }
     }
+
+    struct questCondition
+    {
+        public string conditiontype { get; set; }
+        public string conditiontarget { get; set; }
+        public int curprogress { get; set; }
+        public int goalprogress { get; set; }
+        public bool conditiondone { get; set; }
+    }
+
+    class quest: List<questCondition>
+    {
+        public questData questdata { get; set; }
+        public string questconditions { get; set; }
+        public quest(questData questdata, List<questCondition> questconditions): base(questconditions)
+        {
+            this.questdata = questdata;
+            var o = "";
+            foreach(var condition in questconditions) {
+                o += $"{condition.conditiontype} - {condition.conditiontarget} | {condition.curprogress}/{condition.goalprogress}\n";
+            }
+            this.questconditions = o;
+        }
+    }
+
     struct questType
     {
         public string questtype { get; set; }
     }
 
-    List<questData> userquests = new List<questData>();
+    List<quest> userquests = new List<quest>();
     List<int> selectedtypes = new List<int>();
     List<questType> qtypes = new List<questType>();
     Dictionary<int, string> questStatus = new Dictionary<int, string> {
@@ -59,7 +84,7 @@ public partial class QuestsPage : ContentPage
             v_type = (questType)item;
             selectedtypes.Add(questStatus.FirstOrDefault(i => i.Value == v_type.questtype).Key);
         }
-        questview.ItemsSource = userquests.Where(i => selectedtypes.Contains(i.questtypeid));
+        questview.ItemsSource = userquests.Where(i => selectedtypes.Contains(i.questdata.questtypeid));
     }
 
 
@@ -104,8 +129,11 @@ public partial class QuestsPage : ContentPage
                 quests.Add(obj_data);
         }
         var Onthquest = quests[0];
+        DisplayAlert("info", JsonConvert.SerializeObject(Onthquest), "OK");
         for (int k = 0; k < quests.Count; k++)
         {
+            var condtype = quests[k].conditions.AvailableForFinish[0].type;
+            var condtarget = quests[k].conditions.AvailableForFinish[0].target;
             questData item = new questData();
             item.questname = quests[k].QuestName;
             item.questtypeid = quests[k].sptStatus;
@@ -132,10 +160,19 @@ public partial class QuestsPage : ContentPage
             }
             item.questcolor = questcolor;
             item.questimage = loginData["backendUrl"] + questimage;
-            userquests.Add(item);
+            List<questCondition> _questconditions = new List<questCondition>();
+            questCondition cond = new questCondition();
+            cond.conditiontype = condtype;
+            cond.curprogress = 0;
+            cond.goalprogress = 0;
+            cond.conditiondone = false;
+            cond.conditiontarget = "Scav";
+            _questconditions.Add(cond);
+
+            userquests.Add(new quest(item, _questconditions));
         }
 
-        questview.ItemsSource = userquests.Where(i => selectedtypes.Contains(i.questtypeid));
+        questview.ItemsSource = userquests.Where(i => selectedtypes.Contains(i.questdata.questtypeid));
     }
 
 

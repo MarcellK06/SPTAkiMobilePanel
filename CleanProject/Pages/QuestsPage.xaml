@@ -32,17 +32,18 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid BackgroundColor="{Binding questcolor}" Padding="10">
+                            <Grid BackgroundColor="{Binding questdata.questcolor}" Padding="10">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="6*" />
+                                    <RowDefinition Height="6*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <HorizontalStackLayout>
-                                    <Image Source="{Binding questimage}" HeightRequest="64" WidthRequest="64" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                    <Label Grid.Column="1" Text="{Binding questname}" FontAttributes="Bold" FontSize="Caption" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                                    <Image Source="{Binding questdata.questimage}" HeightRequest="128" WidthRequest="128" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding questdata.questname}" FontAttributes="Bold" FontSize="Caption" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                                    <Label Grid.Column="2" Text="{Binding questconditions}" FontAttributes="Bold" FontSize="Caption" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
                                 </HorizontalStackLayout>
                             </Grid>
                         </ViewCell>
